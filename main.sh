@@ -27,7 +27,7 @@ echo "Activating Atari Environment"
 conda activate atariEnv
 
 echo "Running testTF.py"
-python ~/hw4-1_csci4341/pinball.py
+python ~/hw4-1_csci4341/breakout.py
 
 echo "Deactivating Atari environment"
 conda deactivate
