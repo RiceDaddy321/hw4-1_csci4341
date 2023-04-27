@@ -24,13 +24,15 @@
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
 
 echo "Activating Atari Environment"
-conda activate atariEnv
-
+source ~/Documents/myEnvs/atariEnv/bin/activate
+#source ~/Documents/myEnvs/atariEnv/bin/activate 
+#~/Documents/myEnvs/atariEnv/bin/activate
+#hw4-1_csci4341/breakout.py
 echo "Running testTF.py"
-python ~/hw4-1_csci4341/breakout.py
+python3 ~/Documents/hw4-1_csci4341/breakout.py
 
 echo "Deactivating Atari environment"
-conda deactivate
+deactivate
 
 echo "Done."
 

@@ -150,6 +150,10 @@ if __name__ == "__main__":
     env = gym.make('BreakoutDeterministic-v4')
 
     agent = DQNAgent(action_size=3)
+    
+    save_path = './save_model/my_model'
+    if os.path.exists(save_path):
+        agent.model = tf.keras.models.load_model(save_path)
 
     global_step = 0
     score_avg = 0
@@ -243,4 +247,4 @@ if __name__ == "__main__":
 
         # save model
         if e % 500 == 0:
-            agent.model.save_weights("./save_model/model", save_format="tf")
+            agent.model.save("./save_model/my_model")
