@@ -9,7 +9,9 @@ from skimage.transform import resize
 from keras.optimizers import Adam
 from keras.layers import Conv2D, Dense, Flatten
 
-#input states, output q values
+# input states, output q values
+
+
 class DQN(tf.keras.Model):
     def __init__(self, action_size, state_size):
         super(DQN, self).__init__()
@@ -35,7 +37,7 @@ class DQN(tf.keras.Model):
 class DQNAgent:
     def __init__(self, action_size, state_size=(84, 84, 4)):
 
-        #states and actions
+        # states and actions
         self.state_size = state_size
         self.action_size = action_size
 
@@ -125,9 +127,9 @@ class DQNAgent:
             targets = rewards + (1 - dones) * self.discount_factor * max_q
 
             # loss
-            #error = tf.abs(targets - predicts)
-            #quadratic_part = tf.clip_by_value(error, 0.0, 1.0)
-            #linear_part = error - quadratic_part
+            # error = tf.abs(targets - predicts)
+            # quadratic_part = tf.clip_by_value(error, 0.0, 1.0)
+            # linear_part = error - quadratic_part
             loss = tf.reduce_mean(tf.square(targets - predicts))
 
             self.avg_loss += loss.numpy()
@@ -145,12 +147,14 @@ def pre_processing(observe):
 
 
 if __name__ == "__main__":
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    # tf.debugging.set_log_device_placement(True)
+
     # making env and agent
-    # env = gym.make('BreakoutDeterministic-v4', render_mode='human')
     env = gym.make('BreakoutDeterministic-v4')
 
     agent = DQNAgent(action_size=3)
-    
+
     save_path = './save_model/my_model'
     if os.path.exists(save_path):
         agent.model = tf.keras.models.load_model(save_path)
@@ -160,7 +164,7 @@ if __name__ == "__main__":
     score_max = 0
 
     #
-    action_dict = {0:1, 1:2, 2:3}
+    action_dict = {0: 1, 1: 2, 2: 3}
 
     num_episode = 5000
     for e in range(num_episode):
@@ -170,7 +174,7 @@ if __name__ == "__main__":
         step, score, start_life = 0, 0, 5
         # env initialization
         observe = env.reset()
-        #env.render()
+        # env.render()
         # no actions for first 30 steps
         for _ in range(random.randint(1, agent.no_op_steps)):
             observe, _, _, _ = env.step(1)
@@ -200,7 +204,8 @@ if __name__ == "__main__":
             next_state = np.reshape([next_state], (1, 84, 84, 1))
             next_history = np.append(next_state, history[:, :, :, :3], axis=3)
 
-            agent.avg_q_max += np.amax(agent.model(np.float32(history / 255.))[0])
+            agent.avg_q_max += np.amax(
+                agent.model(np.float32(history / 255.))[0])
 
             if start_life > info['lives']:
                 dead = True
@@ -239,8 +244,10 @@ if __name__ == "__main__":
                 log += "score avg: {:4.1f} | ".format(score_avg)
                 log += "memory length: {:5d} | ".format(len(agent.memory))
                 log += "epsilon: {:.3f} | ".format(agent.epsilon)
-                log += "q avg : {:3.2f} | ".format(agent.avg_q_max / float(step))
-                log += "avg loss : {:3.2f}".format(agent.avg_loss / float(step))
+                log += "q avg : {:3.2f} | ".format(
+                    agent.avg_q_max / float(step))
+                log += "avg loss : {:3.2f}".format(
+                    agent.avg_loss / float(step))
                 print(log)
 
                 agent.avg_q_max, agent.avg_loss = 0, 0
